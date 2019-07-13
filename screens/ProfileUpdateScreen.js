@@ -13,8 +13,7 @@ import {
 } from 'react-native-ui-kitten/theme';
 import Api from '../helpers/api';
 import {styles, textStyle} from "../components/common/style";
-import {Button, Input, Radio, RadioGroup, Text} from 'react-native-ui-kitten/ui';
-import {ContainerView} from "../components/common/ContainerView.component";
+import {Button, Text} from 'react-native-ui-kitten/ui';
 import Profile from '../models/Profile';
 
 interface ComponentProps {
@@ -35,9 +34,8 @@ class ProfileUpdateScreenComponent extends React.Component<ProfileUpdateScreenPr
     }
 
     async componentDidMount(): void {
-        const api = new Api;
         let _this = this;
-        let profile = await api.getProfile();
+        let profile = await Api.getProfile();
         this.setState((state) => {
             state.profile = profile;
             _this.selectedGender = _this.genders.indexOf(profile.genderCode);
@@ -54,6 +52,20 @@ class ProfileUpdateScreenComponent extends React.Component<ProfileUpdateScreenPr
             return state;
         });
         _this.weightInput.focus();
+    };
+    onChangeInput = (field, value) => {
+        this.setState((state) => {
+            state.profile[field] = value;
+            return state;
+        })
+    };
+    async saveProfile(): void {
+        let response = await Api.updateProfile(this.state.profile);
+        if(response.error) {
+            alert(response.message);
+        }else{
+            alert('Cập nhật thành công');
+        }
     };
 
     render(): React.ReactNode {
@@ -74,6 +86,9 @@ class ProfileUpdateScreenComponent extends React.Component<ProfileUpdateScreenPr
                             autoCorrect={true}
                             returnKeyType={"next"}
                             onSubmitEditing={() => this.birthYearInput.focus()}
+                            onChangeText={(text) => {
+                                this.onChangeInput('fullName', text)
+                            }}
                         />
                     </View>
                     <View style={styles.rowInput}>
@@ -87,6 +102,9 @@ class ProfileUpdateScreenComponent extends React.Component<ProfileUpdateScreenPr
                             autoCapitalize="none"
                             returnKeyType={"next"}
                             autoCorrect={false}
+                            onChangeText={(text) => {
+                                this.onChangeInput('birthYear', text)
+                            }}
                         />
                     </View>
                     <View style={styles.rowInput}>
@@ -111,6 +129,9 @@ class ProfileUpdateScreenComponent extends React.Component<ProfileUpdateScreenPr
                             autoCapitalize="none"
                             returnKeyType={"next"}
                             autoCorrect={false}
+                            onChangeText={(text) => {
+                                this.onChangeInput('weight', text)
+                            }}
                         />
                     </View>
                     <View style={styles.rowInput}>
@@ -125,6 +146,9 @@ class ProfileUpdateScreenComponent extends React.Component<ProfileUpdateScreenPr
                             autoCapitalize="none"
                             returnKeyType={"next"}
                             autoCorrect={false}
+                            onChangeText={(text) => {
+                                this.onChangeInput('height', text)
+                            }}
                         />
                     </View>
                     <View style={styles.rowInput}>
@@ -138,6 +162,9 @@ class ProfileUpdateScreenComponent extends React.Component<ProfileUpdateScreenPr
                             returnKeyType={"next"}
                             autoCorrect={false}
                             onSubmitEditing={() => this.phoneInput.focus()}
+                            onChangeText={(text) => {
+                                this.onChangeInput('email', text)
+                            }}
                         />
                     </View>
                     <View style={styles.rowInput}>
@@ -151,19 +178,26 @@ class ProfileUpdateScreenComponent extends React.Component<ProfileUpdateScreenPr
                             returnKeyType={"next"}
                             autoCorrect={false}
                             onSubmitEditing={() => this.infoInput.focus()}
+                            onChangeText={(text) => {
+                                this.onChangeInput('phone', text)
+                            }}
                         />
                     </View>
-                    <View style={styles.rowInput}>
+                    <View style={styles.commonRow}>
+                        <Text style={textStyle.caption2}>Bệnh sử</Text>
                         <TextInput
                             ref={ref => this.infoInput = ref}
-                            placeholder="Thông tin, tiền sử bệnh"
+                            placeholder="Ghi chú về tiền sử bệnh, dị ứng thuốc"
                             style={styles.inputNoLine}
                             value={profile.medicalInfo}
                             multiline={true}
                             numberOfLines={5}
-                            returnKeyType={"send"}
+                            returnKeyType={"done"}
                             autoCapitalize="none"
                             autoCorrect={false}
+                            onChangeText={(text) => {
+                                this.onChangeInput('medicalInfo', text)
+                            }}
                         />
                     </View>
                 </ScrollView>
@@ -171,7 +205,7 @@ class ProfileUpdateScreenComponent extends React.Component<ProfileUpdateScreenPr
                     style={themedStyle.button}
                     textStyle={textStyle.button}
                     size='large'
-                    onPress={() => this.props.navigation.navigate('Links')}>
+                    onPress={() => this.saveProfile()}>
                     Lưu lại
                 </Button>
             </KeyboardAvoidingView>
@@ -191,7 +225,7 @@ export const ProfileUpdateScreen = withStyles(ProfileUpdateScreenComponent, (the
     },
     button: {
         marginHorizontal: 24,
-        marginVertical: 24,
+        marginVertical: 24
     },
 }));
 

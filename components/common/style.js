@@ -53,6 +53,12 @@ export const styles = {
         borderBottomWidth: 1,
         borderBottomColor: theme['border-row'],
     },
+    commonRow: {
+        paddingHorizontal: 16,
+        paddingVertical: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: theme['border-row']
+    },
     picker: {
         width: 105,
     },

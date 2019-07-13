@@ -40,8 +40,7 @@ class HomeScreenComponent extends React.Component<HomeScreenProps> {
     }
 
     async componentDidMount(): void {
-        const api = new Api;
-        let profile = await api.getProfile();
+        let profile = await Api.getProfile();
         this.setState((state) => {
             state.profile = profile;
             return state;
