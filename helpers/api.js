@@ -6,8 +6,7 @@ export default class Api {
      * @returns Profile
      */
     static async getProfile() {
-        // const url = 'http://10.9.251.129:8001/';
-        const url = 'http://192.168.43.134:8001/';
+        const url = 'http://idc.pandachan.vn/api/customer/profile';
         try {
             let response = await fetch(url);
             let data = await response.json();
